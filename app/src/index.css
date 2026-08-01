@@ -1,0 +1,7 @@
+@import "tailwindcss";
+
+/* You can still keep your custom base styles below */
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
