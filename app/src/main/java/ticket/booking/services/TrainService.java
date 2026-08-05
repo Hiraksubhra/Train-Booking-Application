@@ -29,21 +29,23 @@ public class TrainService {
         return sourceIndex != -1 && destinationIndex != -1 && sourceIndex < destinationIndex;
     }
 
-    public boolean findContiguousSeats(Train train, int requestedSeats) {
-        List<List<Integer>> seats = train.getSeats();
-        for (List<Integer> row : seats) {
-            int availableInWindow = 0;
-            for (int windowEnd = 0; windowEnd < row.size(); windowEnd++) {
-                if (row.get(windowEnd) == 0) {
-                    availableInWindow++;
-                    if (availableInWindow == requestedSeats) {
-                        return true;
-                    }
-                } else {
-                    availableInWindow = 0;
-                }
-            }
+    public boolean isValidRoute(Train train, String source, String destination) {
+        return validTrain(train, source, destination);
+    }
+
+    public List<String> getAllStations(){
+        return trainRepository.findAll().stream()
+                .flatMap(train -> train.getStations().stream())
+                .distinct()
+                .map(this::capitalize)
+                .sorted()
+                .collect(Collectors.toList());
+    }
+
+    private String capitalize(String station){
+        if(station == null || station.isEmpty()){
+            return station;
         }
-        return false;
+        return station.substring(0, 1).toUpperCase() + station.substring(1);
     }
 }

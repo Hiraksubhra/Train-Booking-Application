@@ -15,6 +15,18 @@ public class Ticket {
     @Column(name = "date_of_travel")
     private String dateOfTravel;
 
+    @Column(name="seat_count")
+    private int seatCount;
+
+    @Column(name = "seat_row")
+    private int seatRow;
+
+    @Column(name = "seat_start")
+    private int seatStart;
+
+    @Column(name = "seat_end")
+    private int seatEnd;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
@@ -23,13 +35,18 @@ public class Ticket {
     @JoinColumn(name = "train_id")
     private Train train;
 
-    public Ticket(String ticketId, User user, String source, String destination, String dateOfTravel, Train train){
+    public Ticket(String ticketId, User user, String source, String destination, String dateOfTravel,
+                  Train train, int seatCount, int seatRow, int seatStart, int seatEnd){
         this.ticketId = ticketId;
         this.user = user;
         this.source = source;
         this.destination = destination;
         this.dateOfTravel = dateOfTravel;
         this.train = train;
+        this.seatCount = seatCount;
+        this.seatRow = seatRow;
+        this.seatStart = seatStart;
+        this.seatEnd = seatEnd;
     }
 
     public Ticket() {}
@@ -46,4 +63,9 @@ public class Ticket {
     public void setUser(User user) { this.user = user; }
     public Train getTrain() { return train; }
     public void setTrain(Train train) { this.train = train; }
+    public int getSeatCount() { return seatCount; }
+    public void setSeatCount(int seatCount) { this.seatCount = seatCount; }
+    public int getSeatRow() { return seatRow; }
+    public int getSeatStart() { return seatStart; }
+    public int getSeatEnd() { return seatEnd; }
 }

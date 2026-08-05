@@ -1,20 +1,21 @@
 import { apiClient } from "./axiosConfig";
-import { User, Ticket } from "../types";
+import {User, LoginResponse, BookingRequest, TicketResponse} from "../types";
 
 export const signUp = async (user : User): Promise<string>=>{
-    const response = await apiClient.post('/user/signup', user);
+    const response = await apiClient.post('/users/signup', user);
     return response.data;
 };
 
-export const login = async (username: string, password: string): Promise<string> =>{
-    const response = await apiClient.post<string>('/users/login', null, {
+
+export const login = async (username: string, password: string): Promise<LoginResponse> =>{
+    const response = await apiClient.post<LoginResponse>('/users/login', null, {
         params: {username, password}
     });
     return response.data;
 }
 
-export const fetchBookings = async (userId : string): Promise<Ticket[]>=>{
-    const response = await apiClient.get<Ticket[]>(`/users/${userId}/bookings/`);
+export const fetchBookings = async (userId : string): Promise<TicketResponse[]>=>{
+    const response = await apiClient.get<TicketResponse[]>(`/users/${userId}/bookings`);
     return response.data;
 }
 
@@ -23,3 +24,7 @@ export const cancelBooking = async (ticketId : string): Promise<string>=>{
     return response.data;
 }
 
+export const bookTicket = async (userId: string, request: BookingRequest): Promise<TicketResponse>=>{
+    const response = await apiClient.post<TicketResponse>(`/users/${userId}/bookings`, request);
+    return response.data;
+}

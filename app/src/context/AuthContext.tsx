@@ -3,6 +3,7 @@ import { login as apiLogin } from "../api/userApi";
 
 interface AuthContextType {
     username: string | null;
+    userId: string | null;
     isAuthenticated: boolean;
     login : (username : string, password: string) => Promise<void>;
     logout: ()=> void;
@@ -11,16 +12,17 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode} > = ({ children }) =>{
-    const [username, setUsername] = useState<string | null>(null);
-
+    const [username, setUsername] = useState<string | null>(()=>localStorage.getItem('username'));
+    const [userId, setUserId] = useState<string | null>(()=>localStorage.getItem('userId'));
     const login = async (user: string, pass: string)=>{
         try{
             const response = await apiLogin(user, pass);
 
-            if(response === 'Login Successful') {
-                setUsername(user);
-                localStorage.setItem('currentUser', user);
-            }
+            setUsername(response.username);
+            setUserId(response.userId);
+            localStorage.setItem('authToken', response.token);
+            localStorage.setItem('username', response.username);
+            localStorage.setItem('userId', response.userId);
         }catch (error){
             console.error("Login failed", error);
             throw new Error("Invalid credentials");
@@ -29,18 +31,14 @@ export const AuthProvider: React.FC<{ children: ReactNode} > = ({ children }) =>
 
     const logout = () => {
         setUsername(null);
-        localStorage.removeItem('currentUser');
+        setUserId(null);
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('username');
+        localStorage.removeItem('userId');
     }
 
-    React.useEffect(()=>{
-        const storedUser = localStorage.getItem('currentUser');
-        if(storedUser){
-            setUsername(storedUser);
-        }
-    }, []);
-
     return(
-        <AuthContext.Provider value={{username, isAuthenticated: !!username, login, logout}}>
+        <AuthContext.Provider value={{username, userId, isAuthenticated: !!username, login, logout}}>
             {children}
         </AuthContext.Provider>
     );
