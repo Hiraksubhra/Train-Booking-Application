@@ -109,7 +109,7 @@ export const MyBookings: React.FC = () => {
       <div className="min-h-screen bg-[#fcfaf4] relative">
         <div
             className="absolute top-[-5%] left-0 w-full h-[800px] bg-no-repeat bg-cover lg:bg-contain bg-top opacity-40 pointer-events-none mix-blend-multiply z-0"
-            style={{ backgroundImage: "url('/assets/my_bookings_background.png')" }}
+            style={{ backgroundImage: "url('/assets/my_bookings_background.webp')" }}
         ></div>
 
         <Navbar />

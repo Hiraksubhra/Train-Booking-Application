@@ -39,6 +39,12 @@ export const LoginForm: React.FC = ()=>{
 
     return(
         <div className="max-w-md mx-auto mt-16 p-8 bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-purple-50">
+
+            <div
+                className="absolute top-[-5%] left-0 w-full h-[800px] bg-no-repeat bg-cover lg:bg-contain bg-top opacity-40 pointer-events-none mix-blend-multiply z-0"
+                style={{ backgroundImage: "url('/assets/login_background.webp')" }}
+            ></div>
+
             <h2 className="text-3xl font-bold mb-8 text-[#5b1796] text-center tracking-tight">Welcome Back</h2>
             {error && <p className= "text-red-500 mb-6 text-center font-medium bg-red-50 p-3 rounded-lg">{error}</p>}
 

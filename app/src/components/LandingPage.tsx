@@ -32,7 +32,7 @@ export const LandingPage: React.FC = () => {
 
             <div
                 className="absolute top-[-5%] left-0 w-full h-[800px] bg-no-repeat bg-cover lg:bg-contain bg-top opacity-60 pointer-events-none mix-blend-multiply z-0"
-                style={{ backgroundImage: "url('/assets/background_img.png')" }}
+                style={{ backgroundImage: "url('/assets/background_img.webp')" }}
             ></div>
 
             <div className="relative z-10">

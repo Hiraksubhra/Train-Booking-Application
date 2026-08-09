@@ -8,6 +8,7 @@ import { bookTicket } from "../api/userApi.ts";
 import { fetchStations } from "../api/trainApi";
 import { SeatMap } from "./SeatMap.tsx";
 import { Navbar } from "./Navbar.tsx";
+import { TrainFilters } from "./TrainFilters.tsx";
 import { format, parseISO } from "date-fns";
 import { Pencil, ArrowRight, Utensils, Wifi, SearchX } from 'lucide-react';
 import { toast } from 'sonner';
@@ -94,7 +95,7 @@ export const TrainSearch: React.FC = () => {
 
             <div
                 className="absolute top-[-5%] left-0 w-full h-[800px] bg-no-repeat bg-cover lg:bg-contain bg-top opacity-40 pointer-events-none mix-blend-multiply z-0"
-                style={{ backgroundImage: "url('/assets/train_search_background.png')" }}
+                style={{ backgroundImage: "url('/assets/train_search_background.webp')" }}
             ></div>
 
             <Navbar />
@@ -142,13 +143,22 @@ export const TrainSearch: React.FC = () => {
                             </div>
                             <div className="flex-1">
                                 <label className="block text-sm font-semibold text-gray-700 mb-1.5">Date</label>
-                                <div className="flex items-center gap-2 bg-[#f4f2ff] border border-[#e5e0ff] rounded-lg px-3 py-2.5 focus-within:ring-2 focus-within:ring-purple-400 transition-all">
+                                <div
+                                    className="flex items-center gap-2 bg-[#f4f2ff] border border-[#e5e0ff] rounded-lg px-3 py-2.5 focus-within:ring-2 focus-within:ring-purple-400 transition-all cursor-pointer"
+                                    onClick={(e) => {
+                                        // Forces the calendar to open when clicking anywhere in the wrapper
+                                        const input = e.currentTarget.querySelector('input');
+                                        if (input && 'showPicker' in input) {
+                                            input.showPicker();
+                                        }
+                                    }}
+                                >
                                     <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                                     <input
                                         type="date"
                                         value={travelDate}
                                         onChange={(e) => setTravelDate(e.target.value)}
-                                        className="w-full focus:outline-none text-gray-800 text-sm bg-transparent font-medium"
+                                        className="w-full focus:outline-none text-gray-800 text-sm bg-transparent font-medium cursor-pointer"
                                     />
                                 </div>
                             </div>
@@ -166,20 +176,7 @@ export const TrainSearch: React.FC = () => {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                     {/* Sidebar Filters */}
                     <div className="md:col-span-1 space-y-6">
-                        <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 p-5">
-                            <h3 className="text-lg font-bold text-gray-800 mb-4 border-b border-gray-100 pb-2">Filters</h3>
-                            <div className="mb-6">
-                                <h4 className="text-sm font-semibold text-gray-700 mb-3">Class</h4>
-                                <div className="space-y-2">
-                                    {['1A', '2A', '3A', 'SL'].map((cls) => (
-                                        <label key={cls} className="flex items-center text-sm text-gray-600 cursor-pointer">
-                                            <input type="checkbox" className="mr-3 h-4 w-4 text-[#7a20c9] rounded border-gray-300 focus:ring-[#7a20c9]" />
-                                            {cls}
-                                        </label>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
+                        <TrainFilters />
                     </div>
 
                     {/* Train Results */}
