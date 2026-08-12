@@ -37,7 +37,7 @@ public class JwtAuthFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) res;
         String path = request.getRequestURI();
 
-        if (isPublicPath(path)) {
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod()) || isPublicPath(path)) {
             chain.doFilter(req, res);
             return;
         }

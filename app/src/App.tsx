@@ -7,6 +7,7 @@ import { MyBookings } from "./components/MyBookings.tsx";
 import {LandingPage} from "./components/LandingPage.tsx";
 import { HelpPage } from "./components/HelpPage";
 import { Deals } from "./components/Deals";
+import { Toaster } from "sonner";
 
 const queryClient = new QueryClient();
 
@@ -15,6 +16,7 @@ function App() {
         <QueryClientProvider client={queryClient}>
             <AuthProvider>
                 <BrowserRouter>
+                    <Toaster position="top-right" richColors />
                     <div className='min-h-screen bg-gray-100 p-8'>
                         {/*<h1 className='text-4xl font-bold text-center mb-10 text-blue-900'>*/}
                         {/*    Train Booking App*/}

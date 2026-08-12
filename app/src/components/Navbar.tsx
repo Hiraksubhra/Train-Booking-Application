@@ -71,7 +71,7 @@ export const Navbar: React.FC = () => {
                                     Log in
                                 </button>
                                 <button
-                                    onClick={() => navigate('/login')}
+                                    onClick={() => navigate('/login?mode=signup')}
                                     className="text-gray-700 hover:bg-[#f4f2ff] hover:text-[#7a20c9] px-6 py-1.5 rounded-full text-sm font-semibold transition-colors"
                                 >
                                     Sign up

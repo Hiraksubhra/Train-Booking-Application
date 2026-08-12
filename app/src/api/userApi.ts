@@ -20,7 +20,7 @@ export const fetchBookings = async (userId : string): Promise<TicketResponse[]>=
 }
 
 export const cancelBooking = async (ticketId : string): Promise<string>=>{
-    const response = await apiClient.delete<string>(`users/bookings/${ticketId}`);
+    const response = await apiClient.delete<string>(`/users/bookings/${ticketId}`);
     return response.data;
 }
 

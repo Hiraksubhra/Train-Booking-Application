@@ -35,24 +35,25 @@ export const MyBookings: React.FC = () => {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center py-12">
-
-        <div
-            className="absolute top-[-5%] left-0 w-full h-[800px] bg-no-repeat bg-cover lg:bg-contain bg-top opacity-40 pointer-events-none mix-blend-multiply z-0"
-            style={{ backgroundImage: "url('/assets/my_bookings_background.png')" }}
-        ></div>
-
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Please Log In</h2>
-          <p className="text-gray-600 mb-6">
-            You need to be logged in to view your bookings.
-          </p>
-          <button
-            onClick={() => window.location.href = '/login'}
-            className="bg-[#7a20c9] hover:bg-[#6819b0] text-white px-6 py-3 rounded-lg font-medium transition-shadow hover:shadow-md"
-          >
-            Log In
-          </button>
+      <div className="min-h-screen bg-[#fcfaf4] flex flex-col">
+        <Navbar />
+        <div className="flex-1 flex flex-col items-center justify-center py-12 relative z-10">
+          <div className="text-center bg-white/95 backdrop-blur-sm p-8 rounded-2xl shadow-sm border border-gray-100 max-w-md">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Please Log In</h2>
+            <p className="text-gray-600 mb-6">
+              You need to be logged in to view your bookings.
+            </p>
+            <button
+              onClick={() => queryClient.invalidateQueries()}
+              className="hidden"
+            />
+            <a
+              href="/login"
+              className="inline-block bg-[#7a20c9] hover:bg-[#6819b0] text-white px-6 py-3 rounded-lg font-medium transition-shadow hover:shadow-md"
+            >
+              Log In
+            </a>
+          </div>
         </div>
       </div>
     );
@@ -60,27 +61,33 @@ export const MyBookings: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#7a20c9]"></div>
-        <p className="mt-4 text-gray-600">Loading your bookings...</p>
+      <div className="min-h-screen bg-[#fcfaf4] flex flex-col">
+        <Navbar />
+        <div className="flex-1 flex flex-col items-center justify-center py-12">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#7a20c9]"></div>
+          <p className="mt-4 text-gray-600">Loading your bookings...</p>
+        </div>
       </div>
     );
   }
 
   if (isError) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center py-12">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Error Loading Bookings</h2>
-          <p className="text-gray-600 mb-6">
-            We couldn't load your bookings. Please try again later.
-          </p>
-          <button
-            onClick={() => window.location.href = '/'}
-            className="bg-[#7a20c9] hover:bg-[#6819b0] text-white px-6 py-3 rounded-lg font-medium transition-shadow hover:shadow-md"
-          >
-            Go Home
-          </button>
+      <div className="min-h-screen bg-[#fcfaf4] flex flex-col">
+        <Navbar />
+        <div className="flex-1 flex flex-col items-center justify-center py-12">
+          <div className="text-center bg-white/95 backdrop-blur-sm p-8 rounded-2xl shadow-sm border border-gray-100 max-w-md">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Error Loading Bookings</h2>
+            <p className="text-gray-600 mb-6">
+              We couldn't load your bookings. Please try again later.
+            </p>
+            <a
+              href="/"
+              className="inline-block bg-[#7a20c9] hover:bg-[#6819b0] text-white px-6 py-3 rounded-lg font-medium transition-shadow hover:shadow-md"
+            >
+              Go Home
+            </a>
+          </div>
         </div>
       </div>
     );
@@ -88,18 +95,21 @@ export const MyBookings: React.FC = () => {
 
   if (bookings.length === 0) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center py-12">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">No Bookings Yet</h2>
-          <p className="text-gray-600 mb-6">
-            You haven't booked any tickets yet. Start planning your journey!
-          </p>
-          <button
-            onClick={() => window.location.href = '/search'}
-            className="bg-[#7a20c9] hover:bg-[#6819b0] text-white px-6 py-3 rounded-lg font-medium transition-shadow hover:shadow-md"
-          >
-            Find Trains
-          </button>
+      <div className="min-h-screen bg-[#fcfaf4] flex flex-col">
+        <Navbar />
+        <div className="flex-1 flex flex-col items-center justify-center py-12">
+          <div className="text-center bg-white/95 backdrop-blur-sm p-8 rounded-2xl shadow-sm border border-gray-100 max-w-md">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">No Bookings Yet</h2>
+            <p className="text-gray-600 mb-6">
+              You haven't booked any tickets yet. Start planning your journey!
+            </p>
+            <a
+              href="/search"
+              className="inline-block bg-[#7a20c9] hover:bg-[#6819b0] text-white px-6 py-3 rounded-lg font-medium transition-shadow hover:shadow-md"
+            >
+              Find Trains
+            </a>
+          </div>
         </div>
       </div>
     );
