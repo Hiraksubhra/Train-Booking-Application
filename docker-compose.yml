@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  # MySQL Database Service
+  mysql-db:
+    image: mysql:8.0
+    container_name: train-app-mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: ticket_booking_db
+      MYSQL_ROOT_PASSWORD: SQLfor2027
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pSQLfor2027"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    networks:
+      - train-network
+
+  # Spring Boot Backend REST API Service
+  backend:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: train-app-backend
+    restart: always
+    environment:
+      PORT: 8086
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/ticket_booking_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: SQLfor2027
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      JWT_SECRET: super-secret-production-jwt-token-key-change-me-32bytes!
+      ALLOWED_ORIGINS: "*"
+    ports:
+      - "8086:8086"
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+    networks:
+      - train-network
+
+  # React Vite Frontend Web Server (Nginx) Service
+  frontend:
+    build:
+      context: ./app
+      dockerfile: Dockerfile.frontend
+    container_name: train-app-frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - train-network
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  train-network:
+    driver: bridge
