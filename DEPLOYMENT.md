@@ -1,39 +1,73 @@
-# 🚀 Train Booking Application - Deployment & Docker Guide
+# 🚀 Train Booking Application - Deployment & Render Guide
 
-This guide provides step-by-step instructions for containerizing and deploying the **Train Booking Application** using Docker, Docker Compose, and cloud hosting platforms.
-
----
-
-## 🏗️ Architecture Summary
-
-The deployment consists of three containerized services connected via an isolated Docker bridge network:
-
-1. **`mysql-db`**: MySQL 8.0 database with persistent volume storage (`mysql_data`).
-2. **`backend`**: Spring Boot Java 21 REST API container (running on port `8086`).
-3. **`frontend`**: Nginx web server container serving the React SPA bundle and reverse-proxying `/api/` traffic to the backend (running on port `80`).
+This guide provides step-by-step instructions for containerizing and deploying the **Train Booking Application** using Docker, Docker Compose, and **Render**.
 
 ---
 
-## 🛠️ Prerequisites
+## ☁️ Step-by-Step Render Deployment Guide
 
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed and running.
-- [Git](https://git-scm.com/) installed.
+You can deploy the full application on Render in **two easy ways**:
+
+### Option A: 1-Click Render Blueprint Deployment (Recommended)
+
+Render Blueprints automatically provision the **Managed Database**, **Spring Boot Backend Web Service**, and **React Frontend Web Service** using the [`render.yaml`](file:///d:/Code/TrainApp/render.yaml) file included in the repository.
+
+1. **Push your code to GitHub / GitLab**.
+2. Log into your [Render Dashboard](https://dashboard.render.com/).
+3. Click **New +** -> **Blueprints**.
+4. Connect your GitHub repository (`Train-Booking-Application`).
+5. Render will automatically detect `render.yaml` and show:
+   - `train-booking-db` (PostgreSQL Database Instance)
+   - `train-booking-backend` (Spring Boot Web Service)
+   - `train-booking-frontend` (Nginx Web Service)
+6. Click **Apply**. Render will automatically build and deploy all services!
+
+---
+
+### Option B: Manual Setup via Render Dashboard
+
+If you prefer to configure each service manually in the Render dashboard:
+
+#### Step 1: Create PostgreSQL Database Instance
+1. In Render Dashboard, click **New +** -> **PostgreSQL**.
+2. Set Name: `train-booking-db`, Database: `ticket_booking_db`, User: `ticket_user`, Region: `Singapore` (or preferred).
+3. Copy the **Internal Database URL** (e.g., `postgresql://ticket_user:pass@dbservice:5432/ticket_booking_db`).
+
+#### Step 2: Deploy Spring Boot Backend Web Service
+1. Click **New +** -> **Web Service**.
+2. Connect your GitHub repository.
+3. Configure settings:
+   - **Environment**: `Docker`
+   - **Docker Command Context**: `app`
+   - **Dockerfile Path**: `Dockerfile`
+4. Add **Environment Variables**:
+   - `PORT` = `8086`
+   - `SPRING_DATASOURCE_URL` = `<Internal Database URL from Step 1>`
+   - `SPRING_DATASOURCE_DRIVER_CLASS_NAME` = `org.postgresql.Driver`
+   - `SPRING_JPA_HIBERNATE_DDL_AUTO` = `update`
+   - `JWT_SECRET` = `<Generated 32+ character random secret string>`
+   - `ALLOWED_ORIGINS` = `*`
+5. Click **Create Web Service**. Copy the deployed backend URL (e.g. `https://train-booking-backend.onrender.com`).
+
+#### Step 3: Deploy React Frontend Web Service
+1. Click **New +** -> **Web Service**.
+2. Connect your GitHub repository.
+3. Configure settings:
+   - **Environment**: `Docker`
+   - **Docker Command Context**: `app`
+   - **Dockerfile Path**: `Dockerfile.frontend`
+4. Click **Create Web Service**. Your app is live!
 
 ---
 
 ## ⚡ Quick Start: Local Deployment via Docker Compose
 
 ### 1. Build and Launch Containers
-Run the following command from the repository root (`d:\Code\TrainApp`):
+Run from the repository root (`d:\Code\TrainApp`):
 
 ```bash
 docker compose up --build -d
 ```
-
-This single command will:
-- Initialize the MySQL database and wait for it to report `healthy`.
-- Compile and package the Spring Boot backend JAR, then start the container.
-- Compile the React Vite frontend bundle, configure Nginx, and launch the frontend web server.
 
 ### 2. Verify Services
 
@@ -42,69 +76,9 @@ This single command will:
 
 ### 3. Viewing Container Logs
 
-- View logs for all services:
-  ```bash
-  docker compose logs -f
-  ```
-- View backend logs:
-  ```bash
-  docker compose logs -f backend
-  ```
-- View frontend logs:
-  ```bash
-  docker compose logs -f frontend
-  ```
-
-### 4. Stopping Containers
-
-- Stop containers (preserving data volume):
-  ```bash
-  docker compose down
-  ```
-- Stop containers and remove volumes:
-  ```bash
-  docker compose down -v
-  ```
-
----
-
-## 📦 Building Individual Docker Images Manually
-
-If you need to build or push images to Docker Hub / Container Registries:
-
-### Backend Image
 ```bash
-# From app directory
-cd app
-docker build -t train-booking-backend:latest -f Dockerfile .
+docker compose logs -f
 ```
-
-### Frontend Image
-```bash
-# From app directory
-cd app
-docker build -t train-booking-frontend:latest -f Dockerfile.frontend .
-```
-
----
-
-## 🌐 Deploying to Production Cloud Platforms
-
-### 1. Deploying on Render / Railway / Fly.io
-
-- **Backend Service**:
-  - Deploy `app/Dockerfile` as a Web Service.
-  - Set Environment Variables:
-    - `PORT`: `8086`
-    - `SPRING_DATASOURCE_URL`: `jdbc:mysql://<your-db-host>:3306/<db_name>`
-    - `SPRING_DATASOURCE_USERNAME`: `<username>`
-    - `SPRING_DATASOURCE_PASSWORD`: `<password>`
-    - `JWT_SECRET`: `<secure-random-32-byte-key>`
-    - `ALLOWED_ORIGINS`: `https://your-frontend-domain.com`
-
-- **Frontend Service**:
-  - Deploy `app/Dockerfile.frontend` as a Web Service or Static Site.
-  - Set `VITE_API_BASE_URL` to `https://your-backend-domain.com/api`.
 
 ---
 
@@ -113,7 +87,8 @@ docker build -t train-booking-frontend:latest -f Dockerfile.frontend .
 | Environment Variable | Default Value | Description |
 |---|---|---|
 | `PORT` | `8086` | Port Spring Boot listens on |
-| `SPRING_DATASOURCE_URL` | `jdbc:mysql://localhost:3306/ticket_booking_db` | Database JDBC URL |
+| `SPRING_DATASOURCE_URL` | `jdbc:mysql://localhost:3306/ticket_booking_db` | Database JDBC / Connection URL |
+| `SPRING_DATASOURCE_DRIVER_CLASS_NAME` | `com.mysql.cj.jdbc.Driver` or `org.postgresql.Driver` | Database JDBC driver |
 | `SPRING_DATASOURCE_USERNAME` | `root` | Database username |
 | `SPRING_DATASOURCE_PASSWORD` | `SQLfor2027` | Database password |
 | `JWT_SECRET` | `this-is-a-temporary-dev-secret...` | 32+ byte secret key for signing JWTs |

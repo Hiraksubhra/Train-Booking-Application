@@ -1,0 +1,40 @@
+services:
+  # Backend Spring Boot REST API Web Service
+  - type: web
+    name: train-booking-backend
+    env: docker
+    dockerContext: app
+    dockerfilePath: Dockerfile
+    plan: free
+    region: singapore
+    envVars:
+      - key: PORT
+        value: 8086
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: train-booking-db
+          property: connectionString
+      - key: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+        value: org.postgresql.Driver
+      - key: SPRING_JPA_HIBERNATE_DDL_AUTO
+        value: update
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ALLOWED_ORIGINS
+        value: "*"
+
+  # Frontend React Vite Nginx Web Service
+  - type: web
+    name: train-booking-frontend
+    env: docker
+    dockerContext: app
+    dockerfilePath: Dockerfile.frontend
+    plan: free
+    region: singapore
+
+databases:
+  # Managed PostgreSQL Database on Render
+  - name: train-booking-db
+    databaseName: ticket_booking_db
+    user: ticket_user
+    plan: free
